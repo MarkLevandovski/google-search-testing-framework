@@ -1,6 +1,6 @@
-# Google Search - Testing Framework
+# Google Search Testing Framework
 ## About
-This is the simple testing framework to test Google search engin
+This is the simple testing framework to test Google search engine
 
 ## How to run
 #### Requirements 
