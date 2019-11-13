@@ -14,9 +14,9 @@ public class SeleniumUtils {
      * @param driver
      * @return wait
      */
-    public static Wait defaultWait(WebDriver driver) {
+    public static Wait<WebDriver> defaultWait(WebDriver driver) {
 
-        return new FluentWait(driver)
+        return new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofSeconds(1))
                 .ignoring(NoSuchElementException.class)

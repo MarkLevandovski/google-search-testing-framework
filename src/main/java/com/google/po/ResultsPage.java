@@ -8,8 +8,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.google.utils.SeleniumUtils.defaultWait;
@@ -43,8 +44,7 @@ public class ResultsPage extends MainPage {
         for (int i = 0; i < resultList.size(); i++) {
             mapOfResults.put(i, resultList.get(i).getText());
         }
-
-        LOGGER.info("Results list: " + mapOfResults.values());
+        LOGGER.info("Results list: {}", mapOfResults.values());
 
         return mapOfResults;
     }
@@ -84,26 +84,27 @@ public class ResultsPage extends MainPage {
         List<Integer> resultNumber = new ArrayList<>();
         Integer pageNumber = null;
 
-        for (long stop = System.nanoTime() + TimeUnit.MINUTES.toNanos(5); stop > System.nanoTime(); ) {
+        Instant startTime = Instant.now();
+        while (Instant.now().isBefore(startTime.plus(5, ChronoUnit.MINUTES))) {
             Map<Integer, String> resultList = getResultsElements();
 
             filteredResults = resultList.entrySet().stream()
                     .filter(item -> item.getValue().contains(expectedUrl))
                     .collect(Collectors.toList());
 
-            if (filteredResults.size() == 0) {
+            if (filteredResults.isEmpty()) {
                 LOGGER.info("URL is not displayed on this page.");
                 try {
                     goToNextResultsPage();
                 } catch (NotFoundException e) {
-                    LOGGER.info("This was the last available result");
+                    LOGGER.info("This was the last available result page.");
                     break;
                 }
 
             } else {
                 LOGGER.info("Filtered Results: " + filteredResults);
-                for (int i = 0; i < filteredResults.size(); i++) {
-                    resultNumber.add(filteredResults.get(i).getKey() + 1);
+                for (Map.Entry<Integer, String> result : filteredResults) {
+                    resultNumber.add(result.getKey() + 1);
                 }
                 pageNumber = getPageNumber();
                 LOGGER.info("Result found on the <" + resultNumber + "> positions at the <" + pageNumber + "> results page.");
