@@ -26,7 +26,6 @@ public class ResultsPage extends MainPage {
     }
 
     private By resultsList = By.cssSelector(".rc > .r > a > div > cite");
-    private By resultsStats = By.id("resultStats");
     private By resultPageNumber = By.cssSelector("td.cur");
     private By nextButton = By.id("pnnext");
 
@@ -36,7 +35,6 @@ public class ResultsPage extends MainPage {
      * @return map of URLs with their placement number on the results list
      */
     private Map<Integer, String> getResultsElements() {
-        defaultWait(driver).until(ExpectedConditions.visibilityOf(driver.findElement(resultsStats)));
         defaultWait(driver).until(ExpectedConditions.numberOfElementsToBeMoreThan(resultsList, 0));
         List<WebElement> resultList = driver.findElements(resultsList);
         Map<Integer, String> mapOfResults = new HashMap<>();

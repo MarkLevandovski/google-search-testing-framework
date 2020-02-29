@@ -3,6 +3,7 @@ package com.google.steps;
 import com.google.po.MainPage;
 import com.google.po.ResultsPage;
 import com.google.utils.BrowserFactory;
+import com.google.utils.SeleniumUtils;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -11,9 +12,11 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.*;
+import org.openqa.selenium.logging.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 public class GoogleSteps {
@@ -55,6 +58,8 @@ public class GoogleSteps {
         mainPage = new MainPage(driver);
         Assert.assertEquals("Google", driver.getTitle());
         Assert.assertTrue(driver.findElement(By.xpath("//input[@aria-label='Search']")).isDisplayed());
+        List<LogEntry> request = SeleniumUtils.getBrowserLogs(driver, "POST");
+        Assert.assertNotNull(request.stream().filter(item -> item.getMessage().contains("requestWillBeSent")).findFirst());
     }
 
     @When("^I search for (.*)$")
